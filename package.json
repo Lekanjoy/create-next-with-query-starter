@@ -1,0 +1,53 @@
+{
+  "name": "create-next-with-query-starter",
+  "version": "1.0.1",
+  "description": "CLI that scaffolds a Next.js project pre-wired with TanStack Query, Axios, Zod, React Hook Form, idb-keyval, sonner, shadcn/ui. with other helper hooks and functions",
+  "type": "module",
+  "bin": {
+    "create-next-with-query-starter": "dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean && rm -rf dist/templates && cp -r src/templates dist/templates",
+    "dev": "tsup src/index.ts --format esm --watch",
+    "prepublishOnly": "npm run build"
+  },
+  "keywords": [
+    "nextjs",
+    "next",
+    "starter",
+    "cli",
+    "tanstack-query",
+    "react-query",
+    "axios",
+    "zod",
+    "react-hook-form",
+    "shadcn",
+    "shadcn-ui",
+    "tailwindcss",
+    "boilerplate",
+    "scaffold",
+    "create-next-app"
+  ],
+  "author": "Olalekan Alabi <alabilekanemmanuel@gmail.com>",
+  "license": "MIT",
+  "engines": {
+    "node": ">=18"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^8.5.2",
+    "commander": "^15.0.0",
+    "execa": "^10.0.0",
+    "fs-extra": "^11.4.0",
+    "ora": "^9.4.1",
+    "picocolors": "^1.1.1"
+  },
+  "devDependencies": {
+    "@types/fs-extra": "^11.0.4",
+    "@types/node": "^26.1.1",
+    "tsup": "^8.5.1",
+    "typescript": "^7.0.2"
+  }
+}
