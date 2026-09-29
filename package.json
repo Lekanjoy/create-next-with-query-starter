@@ -1,6 +1,6 @@
 {
   "name": "create-next-with-query-starter",
-  "version": "1.0.1",
+  "version": "1.1.0",
   "description": "CLI that scaffolds a Next.js project pre-wired with TanStack Query, Axios, Zod, React Hook Form, idb-keyval, sonner, shadcn/ui. with other helper hooks and functions",
   "type": "module",
   "bin": {
