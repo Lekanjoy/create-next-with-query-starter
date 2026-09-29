@@ -20,13 +20,19 @@ const handleLogout = () => {
 type RetriableRequest = InternalAxiosRequestConfig & { _retry?: boolean };
 
 let refreshPromise: Promise<void> | null = null;
+const publicEndpoints = [
+  AUTH.login,
+  AUTH.logout,
+  AUTH.resetPassword,
+  AUTH.confirmReset,
+  AUTH.refreshToken,
+];
 
 //TODO:  Cookie auth is the default, so requests rely on `withCredentials` instead of
 // an Authorization header. To use IndexedDB token storage, uncomment this block.
 
 // axiosInstance.interceptors.request.use(async (config) => {
 //   const token = await getToken("accessToken");
-//   const publicEndpoints = [AUTH.login, AUTH.resetPassword, AUTH.confirmReset];
 //   const isPublic = publicEndpoints.some((endpoint) =>
 //     config.url?.includes(endpoint),
 //   );
@@ -47,10 +53,14 @@ axiosInstance.interceptors.response.use(
   (res) => res,
   async (error) => {
     const originalRequest = error.config as RetriableRequest | undefined;
+    const isRefreshExcluded = publicEndpoints.some((endpoint) =>
+      originalRequest?.url?.includes(endpoint),
+    );
     if (
       error.response?.status !== 401 ||
       !originalRequest ||
-      originalRequest._retry
+      originalRequest._retry ||
+      isRefreshExcluded
     ) {
       return Promise.reject(error);
     }

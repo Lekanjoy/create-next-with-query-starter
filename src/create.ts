@@ -138,19 +138,11 @@ export async function createProject(name: string, pmFlag?: string) {
   });
   spinner.succeed("Dependencies installed");
 
-  // Step 5: Copy all template files (overrides shadcn's button with our custom one)
+  // Step 5: Copy the complete template after shadcn so its CSS remains the
+  // source of truth for the generated starter.
   spinner.start("Adding starter files...");
   await fs.copy(templatesDir, destination, {
     overwrite: true,
-    filter: (src) => {
-      // Don't overwrite components.json — it's already correct
-      if (src.endsWith("components.json")) return false;
-      // Don't overwrite globals.css — shadcn may have added CSS vars
-      if (src.endsWith("globals.css")) return false;
-      // Don't overwrite lib/utils.ts — shadcn already generated it
-      if (src.endsWith(path.join("lib", "utils.ts"))) return false;
-      return true;
-    },
   });
   spinner.succeed("Starter files added");
 

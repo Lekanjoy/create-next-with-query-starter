@@ -21,14 +21,14 @@ npx create-next-with-query-starter my-app --pm bun
 
 ### Stack
 
-| Category | Package |
-|---|---|
-| Framework | Next.js (App Router, TypeScript, Tailwind v4) |
-| Data fetching | TanStack Query v5 + Axios |
-| Forms | React Hook Form + Zod |
-| UI | shadcn/ui (new-york style) |
-| Toasts | Sonner |
-| Token storage | idb-keyval (IndexedDB) |
+| Category      | Package                                       |
+| ------------- | --------------------------------------------- |
+| Framework     | Next.js (App Router, TypeScript, Tailwind v4) |
+| Data fetching | TanStack Query v5 + Axios                     |
+| Forms         | React Hook Form + Zod                         |
+| UI            | shadcn/ui (new-york style)                    |
+| Toasts        | Sonner                                        |
+| Auth storage  | Cookies / idb-keyval (IndexedDB)              |
 
 ### Generated project structure
 
@@ -69,9 +69,9 @@ my-app/
 
 ### Axios instance features
 
-- Attaches `Authorization: Bearer <token>` to every non-public request
-- Silent token refresh on 401 using the stored refresh token
-- Auto-redirects to `/login` on failed refresh
+- Attaches cookies with the `withCredentials: true` flag or `Authorization: Bearer <token>` to every non-public request
+- Silent token refresh on 401 using the refresh token
+- Auto-redirects to `/login` on failed token refresh
 
 ## After scaffolding
 
