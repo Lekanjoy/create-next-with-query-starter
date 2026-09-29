@@ -8,8 +8,8 @@ const useLoginApi = () =>
   });
 
 const useLogoutApi = () =>
-  useMutation<string, Error, { refresh: string }>({
-    mutationFn: (body) => api.post<string>(AUTH.logout, body),
+  useMutation<string, Error, void>({
+    mutationFn: () => api.post<string>(AUTH.logout),
   });
 
 const useResetPasswordApi = () =>

@@ -7,7 +7,8 @@ import {
   useResetPasswordApi,
 } from "@/api/auth.api";
 import { extractErrorMsg } from "@/helpers";
-import { deleteToken, getToken, saveToken } from "@/helpers";
+// For IndexedDB token storage, uncomment this import and the marked blocks below.
+// import { deleteToken, getToken, saveToken } from "@/helpers";
 import { queryClient } from "@/query/queryClient";
 import { useRouter } from "next/navigation";
 import { toast } from "sonner";
@@ -21,15 +22,17 @@ const useLoginService = () => {
       { email, password },
       {
         onSuccess: async (data) => {
-          await Promise.all([
-            saveToken("accessToken", data.result.access_token),
-            saveToken("refreshToken", data.result.refresh_token),
-          ]);
+          // Cookie auth is the default: the backend sets HttpOnly cookies.
+          // For IndexedDB token storage, uncomment this block instead.
+          // await Promise.all([
+          //   saveToken("accessToken", data.result.access_token),
+          //   saveToken("refreshToken", data.result.refresh_token),
+          // ]);
           toast.success("Signed in successfully");
           const search =
             typeof window !== "undefined" ? window.location.search : "";
-          const redirectParam = new URLSearchParams(search).get("from");
-          router.replace(redirectParam ?? "/");
+          const redirectParam = new URLSearchParams(search).get("callbackUrl");
+          router.replace(redirectParam?.startsWith("/") ? redirectParam : "/");
         },
         onError: (err) => {
           toast.error(extractErrorMsg(err) ?? "Failed to sign in");
@@ -46,23 +49,16 @@ const useLogoutService = () => {
   const router = useRouter();
 
   const logoutUser = async () => {
-    const refreshToken = await getToken("refreshToken");
-    await logout(
-      { refresh: refreshToken! },
-      {
-        onSuccess: async () => {
-          await Promise.all([
-            deleteToken("accessToken"),
-            deleteToken("refreshToken"),
-          ]);
-          queryClient.clear();
-          toast.success("Signed out successfully");
-        },
-        onError: () => {
-          toast.error("Failed to sign out. Please try again.");
-        },
+    // Cookie auth is the default: the backend reads and clears its cookies.
+    await logout(undefined, {
+      onSuccess: () => {
+        queryClient.clear();
+        toast.success("Signed out successfully");
       },
-    );
+      onError: () => {
+        toast.error("Failed to sign out. Please try again.");
+      },
+    });
     router.replace("/login");
   };
 
@@ -71,7 +67,11 @@ const useLogoutService = () => {
 
 const useResetPasswordService = () => {
   const router = useRouter();
-  const { mutateAsync: resetPassword, isPending, error } = useResetPasswordApi();
+  const {
+    mutateAsync: resetPassword,
+    isPending,
+    error,
+  } = useResetPasswordApi();
 
   const sendResetLink = (email: string) => {
     resetPassword(
@@ -94,8 +94,11 @@ const useResetPasswordService = () => {
 
 const useConfirmResetPasswordService = () => {
   const router = useRouter();
-  const { mutate: confirmReset, isPending, error } =
-    useConfirmResetPasswordApi();
+  const {
+    mutate: confirmReset,
+    isPending,
+    error,
+  } = useConfirmResetPasswordApi();
 
   const confirmResetPassword = (body: IConfirmResetPasswordDto) => {
     confirmReset(body, {
@@ -118,7 +121,11 @@ const useConfirmResetPasswordService = () => {
 
 const useFetchUserProfileService = () => {
   const { data, isLoading, error } = useGetUserApi();
-  return { user: data?.result, isFetchingUser: isLoading, fetchUserError: error };
+  return {
+    user: data?.result,
+    isFetchingUser: isLoading,
+    fetchUserError: error,
+  };
 };
 
 export {
